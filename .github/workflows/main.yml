@@ -1,0 +1,27 @@
+name: build app
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  push:
+    name: "Build app"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup QEMU for ARM64 Build
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+      - uses: docker/build-push-action@v4
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/csaller/simple-express-server:latest
