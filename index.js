@@ -1,8 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
+
+const port = process.env.PORT || 3000
 
 const app = express()
 
 app.use(express.json())
+
+app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
   const envs = process.env
@@ -14,4 +19,4 @@ app.get('/', (req, res) => {
   res.json(envs)
 })
 
-app.listen(process.env.PORT, () => { console.info(`listening on port ${process.env.PORT}`) })
+app.listen(port, () => { console.info(`listening on http://localhost:${port}`) })
